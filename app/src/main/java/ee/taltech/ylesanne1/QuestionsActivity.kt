@@ -1,6 +1,9 @@
 package ee.taltech.ylesanne1
 
+import android.R.attr.button
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -9,7 +12,8 @@ import ee.taltech.ylesanne1.model.Question
 import ee.taltech.ylesanne1.model.Quiz
 import kotlinx.android.synthetic.main.activity_questions.*
 
-class QuestionsActivity : AppCompatActivity() , View.OnClickListener{
+
+class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var maxPointer: Int = 0;
     private var currPointer: Int = 0;
     private var currProgress: Int = 0;
@@ -44,6 +48,12 @@ class QuestionsActivity : AppCompatActivity() , View.OnClickListener{
             btn_4.setOnClickListener(this)
             btn_action.setOnClickListener(this)
 
+            btn_1.setBackgroundColor(Color.LTGRAY)
+            btn_2.setBackgroundColor(Color.LTGRAY)
+            btn_3.setBackgroundColor(Color.LTGRAY)
+            btn_4.setBackgroundColor(Color.LTGRAY)
+            btn_action.setBackgroundColor(Color.LTGRAY)
+
         }
 
 
@@ -54,18 +64,30 @@ class QuestionsActivity : AppCompatActivity() , View.OnClickListener{
 
     }
 
-    fun getResByName(context: Context, name: String?): Int {
-        return context.resources.getIdentifier("$name.jpg", "string", context.packageName)
-    }
+//    fun getResByName(context: Context, name: String?): Int {
+//        return context.resources.getIdentifier("$name.jpg", "string", context.packageName)
+//    }
 
     override fun onClick(v: View?) {
         setTitle(v?.id.toString());
-        when(v!!.id){
-            btn_1.id->{setTitle(btn_1.text)}
-            btn_2.id->{setTitle(btn_2.text)}
-            btn_3.id->{setTitle(btn_3.text)}
-            btn_4.id->{setTitle(btn_4.text)}
-            else->setTitle("bb")
+        btn_1.setBackgroundColor(Color.LTGRAY)
+        btn_2.setBackgroundColor(Color.LTGRAY)
+        btn_3.setBackgroundColor(Color.LTGRAY)
+        btn_4.setBackgroundColor(Color.LTGRAY)
+        when (v!!.id) {
+            btn_1.id -> {
+                setTitle(btn_1.text); btn_1.setBackgroundColor(Color.CYAN)
+            }
+            btn_2.id -> {
+                setTitle(btn_2.text); btn_2.setBackgroundColor(Color.CYAN)
+            }
+            btn_3.id -> {
+                setTitle(btn_3.text); btn_3.setBackgroundColor(Color.CYAN)
+            }
+            btn_4.id -> {
+                setTitle(btn_4.text); btn_4.setBackgroundColor(Color.CYAN)
+            }
+            else -> setTitle("bb")
         }
 
     }
