@@ -54,6 +54,11 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
             btn_4.setBackgroundColor(Color.LTGRAY)
             btn_action.setBackgroundColor(Color.LTGRAY)
 
+            val btn_list: MutableList<String> = mutableListOf<String>()
+            btn_list.add(listQ.get(currPointer).correctAnswer)
+            for (i in 0..2){
+
+            }
         }
 
 
