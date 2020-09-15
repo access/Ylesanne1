@@ -10,6 +10,7 @@ object Quiz {
     const val USER_NAME: String = "user_name"
     const val TOTAL_QUESTIONS: String = "total_questions"
     const val CORRECT_ANSWERS: String = "correct_answers"
+    const val SCORE: String = "score"
 
     private const val filename = "relations.csv"
 
@@ -24,13 +25,7 @@ object Quiz {
         }
 
         fileContent.lines().map {
-            list.add(
-                Question(
-                    it.split(";")[0],
-                    it.split(";")[1],
-                    it.split(";")[2]
-                )
-            )
+            list.add(Question(it.split(";")[0], it.split(";")[1], it.split(";")[2]))
         }
         return list
     }

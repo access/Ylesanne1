@@ -9,17 +9,18 @@
     <LinearLayout
         android:layout_width="409dp"
         android:layout_height="729dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginLeft="1dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginBottom="1dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6">
 
         <ImageView
             android:id="@+id/img_main"
@@ -28,11 +29,26 @@
             android:contentDescription="@string/app_name"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="349dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
+
+            <TextView
+                android:id="@+id/progressSteps"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+
+                android:text="[1/10]" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/questionText"
@@ -46,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="348dp"
             android:gravity="center"
-
+            android:layout_margin="5dp"
             android:orientation="vertical">
 
             <Button
@@ -78,13 +94,37 @@
                 android:layout_margin="5dp"
                 android:text="btn_4" />
 
-            <Button
-                android:id="@+id/btn_action"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:gravity="center"
-                android:text="act_btn" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                android:layout_margin="5dp"
+                <Button
+                    android:id="@+id/btn_giveanswer"
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/holo_blue_dark"
+                    android:foreground="@android:drawable/ic_menu_info_details"
+                    android:gravity="center"
+                    android:text=""
+                    android:textAllCaps="false"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_action"
+                    android:layout_width="300dp"
+                    android:layout_height="67dp"
+                    android:layout_margin="20dp"
+                    android:layout_marginTop="20dp"
+
+                    android:background="@android:color/holo_blue_light"
+                    android:text="act_btn"
+                    android:textColor="@color/cardview_light_background" />
+            </LinearLayout>
 
         </LinearLayout>
 

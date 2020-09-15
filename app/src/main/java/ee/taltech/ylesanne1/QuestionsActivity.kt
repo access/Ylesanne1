@@ -1,10 +1,9 @@
 package ee.taltech.ylesanne1
 
-import android.R.attr.button
-import android.content.Context
+import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -14,87 +13,141 @@ import kotlinx.android.synthetic.main.activity_questions.*
 
 
 class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
-    private var maxPointer: Int = 0;
+    private val colorOfBtn = Color.LTGRAY;
+    private val COUNT_QUESTIONS = 10;
     private var currPointer: Int = 0;
     private var currProgress: Int = 0;
-
-    companion object {
-        private const val COUNT_QUESTION = 10
-    }
-
+    private var currentAnswer: String? = null
+    private var goodAnswer: String? = null
+    private var listQ: List<Question>? = null;
+    private var SCORE = 0;
+    private var answerLooked: Boolean = false
+    private var correctCount: Int = 0
+    private var username: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_questions)
-        var listQ: List<Question>? = Quiz.getQuestions(this)?.shuffled()
+        btn_1.setOnClickListener(this)
+        btn_2.setOnClickListener(this)
+        btn_3.setOnClickListener(this)
+        btn_4.setOnClickListener(this)
+        btn_action.setOnClickListener(this)
+        listQ = Quiz.getQuestions(this)?.shuffled()
+        setQ()
+        username = intent.getStringExtra(Quiz.USER_NAME)
+        btn_giveanswer.setOnClickListener {
+            answerLooked = true
+            when (goodAnswer) {
+                btn_1.text -> btn_1.setBackgroundColor(Color.GREEN)
+                btn_2.text -> btn_2.setBackgroundColor(Color.GREEN)
+                btn_3.text -> btn_3.setBackgroundColor(Color.GREEN)
+                btn_4.text -> btn_4.setBackgroundColor(Color.GREEN)
+            }
+            btn_action.text = "NEXT"
+        }
+    }
 
 
+    fun setQ(): Unit {
         if (listQ != null) {
-            var progressStep = 100 / listQ.size;
-            val res_id =
-                resources.getIdentifier(listQ.get(currPointer).imgResID, "drawable", packageName);
+            var progressStep = 100 / COUNT_QUESTIONS;
+            val resID = resources.getIdentifier(listQ!!.get(currPointer).imgResID, "drawable", packageName);
             questionText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20F);
-            questionText.text = "What is the capital of ${listQ.get(currPointer).countryName}?"
-            getActionBar()?.hide();
+            questionText.text = "What is the capital of ${listQ!!.get(currPointer).country}?"
+            progressSteps.text = "[${currPointer + 1}/$COUNT_QUESTIONS]"
+            actionBar?.hide();
             //setTitle("What is the capital of ${listQ.get(currPointer).countryName}?");
-            img_main.setImageResource(res_id)
-            btn_1.text = listQ.get(currPointer).correctAnswer
+            img_main.setImageResource(resID)
+            btn_1.text = listQ!!.get(currPointer).capital
             currProgress += progressStep;
             progressBar.setProgress(currProgress)
+            resetBtnColor()
+            // create 4 buttons for random answers
+            goodAnswer = listQ?.get(currPointer)?.capital
+            val btnAnsw = getBtnAnswers(listQ!!.get(currPointer), listQ!!);
+            Log.e("btnAnsw", "size: ${btnAnsw.size}")
+            btn_1.text = btnAnsw.get(0).capital
+            btn_2.text = btnAnsw.get(1).capital
+            btn_3.text = btnAnsw.get(2).capital
+            btn_4.text = btnAnsw.get(3).capital
+            if (!answerLooked) btn_action.text = currentAnswer?.let { "ANSWER" } ?: kotlin.run { "SKIP" }
+            currPointer++;
+        }
+    }
 
-            btn_1.setOnClickListener(this)
-            btn_2.setOnClickListener(this)
-            btn_3.setOnClickListener(this)
-            btn_4.setOnClickListener(this)
-            btn_action.setOnClickListener(this)
+    override fun onClick(v: View?) {
+        //setTitle(v?.id.toString());
+        Log.e("setQ", "currP: $currPointer maxP: $COUNT_QUESTIONS")
 
-            btn_1.setBackgroundColor(Color.LTGRAY)
-            btn_2.setBackgroundColor(Color.LTGRAY)
-            btn_3.setBackgroundColor(Color.LTGRAY)
-            btn_4.setBackgroundColor(Color.LTGRAY)
-            btn_action.setBackgroundColor(Color.LTGRAY)
-
-            val btn_list: MutableList<String> = mutableListOf<String>()
-            btn_list.add(listQ.get(currPointer).correctAnswer)
-            for (i in 0..2){
-
+        if (!answerLooked || v?.id == btn_action.id) {
+            btn_1.setBackgroundColor(colorOfBtn)
+            btn_2.setBackgroundColor(colorOfBtn)
+            btn_3.setBackgroundColor(colorOfBtn)
+            btn_4.setBackgroundColor(colorOfBtn)
+            when (v!!.id) {
+                btn_1.id -> {
+                    btn_1.setBackgroundColor(Color.CYAN); currentAnswer = btn_1.text.toString(); //setTitle(currentAnswer);
+                }
+                btn_2.id -> {
+                    btn_2.setBackgroundColor(Color.CYAN);currentAnswer = btn_2.text.toString(); //setTitle(currentAnswer);
+                }
+                btn_3.id -> {
+                    btn_3.setBackgroundColor(Color.CYAN);currentAnswer = btn_3.text.toString(); //setTitle(currentAnswer);
+                }
+                btn_4.id -> {
+                    btn_4.setBackgroundColor(Color.CYAN);currentAnswer = btn_4.text.toString(); //setTitle(currentAnswer);
+                }
+                btn_action.id -> {
+                    Log.e("score", "currAn: $currentAnswer goodA: $goodAnswer")
+                    if (currPointer <= COUNT_QUESTIONS) {
+                        if (currentAnswer == goodAnswer && !answerLooked) {
+                            SCORE += 10; correctCount++
+                        } else {
+                            if (SCORE > 0 && !answerLooked) SCORE -= 5
+                        }
+                    }
+                    answerLooked = false
+                    currentAnswer = null;
+                    if (currPointer < COUNT_QUESTIONS) {
+                        setQ()
+                    } else {
+                        val intent = Intent(this, ResultActivity::class.java)
+                        intent.putExtra(Quiz.CORRECT_ANSWERS, correctCount)
+                        intent.putExtra(Quiz.TOTAL_QUESTIONS, COUNT_QUESTIONS)
+                        intent.putExtra(Quiz.SCORE, SCORE)
+                        intent.putExtra(Quiz.USER_NAME, username)
+                        startActivity(intent)
+                        finish()
+                    }
+                    setTitle("Your score: $SCORE");
+                }
+                //else -> setTitle("bb")
             }
         }
-
-
-//        btn_action.setOnClickListener {
-//            img_main.setImageDrawable(getResources().getDrawable(R.drawable.ee))
-//            progressBar.setProgress(50)
-//        }
+        if (!answerLooked) btn_action.text = currentAnswer?.let { "ANSWER" } ?: kotlin.run { "SKIP" }
 
     }
 
-//    fun getResByName(context: Context, name: String?): Int {
-//        return context.resources.getIdentifier("$name.jpg", "string", context.packageName)
-//    }
-
-    override fun onClick(v: View?) {
-        setTitle(v?.id.toString());
-        btn_1.setBackgroundColor(Color.LTGRAY)
-        btn_2.setBackgroundColor(Color.LTGRAY)
-        btn_3.setBackgroundColor(Color.LTGRAY)
-        btn_4.setBackgroundColor(Color.LTGRAY)
-        when (v!!.id) {
-            btn_1.id -> {
-                setTitle(btn_1.text); btn_1.setBackgroundColor(Color.CYAN)
-            }
-            btn_2.id -> {
-                setTitle(btn_2.text); btn_2.setBackgroundColor(Color.CYAN)
-            }
-            btn_3.id -> {
-                setTitle(btn_3.text); btn_3.setBackgroundColor(Color.CYAN)
-            }
-            btn_4.id -> {
-                setTitle(btn_4.text); btn_4.setBackgroundColor(Color.CYAN)
-            }
-            else -> setTitle("bb")
+    private fun getBtnAnswers(correctAnswer: Question, possibleAnswers: List<Question>): List<Question> {
+        val answerButtonsList: MutableList<Question> = mutableListOf<Question>()
+        answerButtonsList.add(correctAnswer) // add correct answer
+        for (i in possibleAnswers.shuffled()) {
+            if (i != correctAnswer && answerButtonsList.size < 4) {
+                answerButtonsList.add(i)
+            } //else break
         }
+        return answerButtonsList.shuffled()
+    }
 
+    private fun resetBtnColor(): Unit {
+        if (!answerLooked) {
+            btn_1.setBackgroundColor(colorOfBtn)
+            btn_2.setBackgroundColor(colorOfBtn)
+            btn_3.setBackgroundColor(colorOfBtn)
+            btn_4.setBackgroundColor(colorOfBtn)
+            // btn_action.setBackgroundColor(colorOfBtn)
+        }
     }
 
 }

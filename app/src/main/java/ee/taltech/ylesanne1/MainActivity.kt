@@ -27,23 +27,23 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, QuestionsActivity::class.java)
         intent.putExtra(Quiz.USER_NAME, username)
 
-        //getActionBar()?.hide();
-        startActivity(intent)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        finish()
+        //        //getActionBar()?.hide();
+        //        startActivity(intent)
+        //        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        //        finish()
 
-//        personName.requestFocus()
-//        buttonGo.setOnClickListener{
-//            val username = personName.text.toString()
-//            if (username.isBlank()) {
-//                Toast.makeText(this, "Please enter your name for starting", Toast.LENGTH_LONG).show()
-//            } else {
-//                val intent = Intent(this, QuestionsActivity::class.java)
-//                intent.putExtra(Quiz.USER_NAME, username)
-//                startActivity(intent)
-//                window.decorView.systemUiVisibility= View.SYSTEM_UI_FLAG_FULLSCREEN
-//                finish()
-//            }
-//        }
+        personName.requestFocus()
+        buttonGo.setOnClickListener {
+            val username = personName.text.toString()
+            if (username.isBlank()) {
+                Toast.makeText(this, "Please enter your name for starting", Toast.LENGTH_LONG).show()
+            } else {
+                val intent = Intent(this, QuestionsActivity::class.java)
+                intent.putExtra(Quiz.USER_NAME, username)
+                startActivity(intent)
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+                finish()
+            }
+        }
     }
 }
